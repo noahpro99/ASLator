@@ -1,34 +1,20 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './components/ui/card';
-
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Hand from './pages/Hand';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Holistics from "./pages/Holistics";
 function App() {
   return (
     <div >
-      <header className="bg-gray-800 min-h-screen flex flex-col items-center justify-center text-white text-2xl">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Card>
-          <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
-        <a
-          className="text-blue-300"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <BrowserRouter>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/hand" element={<Hand />} />
+                <Route path="/Holistics" element={<Holistics />} />
+            </Routes>
+        </BrowserRouter>
     </div>
   );
 }
