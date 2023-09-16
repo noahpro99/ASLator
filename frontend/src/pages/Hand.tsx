@@ -85,7 +85,7 @@ const Hand = () => {
         canvasRef.current.height
       );
       if (results.multiHandLandmarks && results.multiHandedness) {
-        if (results.multiHandLandmarks.length == 0) {
+        if (results.multiHandLandmarks.length === 0) {
           setCurrentlySigning(false);
         }
         let totalDiff = 0;
