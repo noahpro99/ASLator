@@ -65,7 +65,7 @@ class TFLiteModel:
         
         return df
     
-    def predict(self, input_data: list[TranscribeReq]):
+    def predict(self, input_data: list[TranscribeReq]) -> tuple[int, float]:
         data_columns = ['x', 'y', 'z']
         df = pd.DataFrame(columns=data_columns)
         for frame in input_data:
@@ -78,5 +78,8 @@ class TFLiteModel:
         
         output = self.predict_fn(inputs=data)
         p = output['outputs'].reshape(-1)
-        predict = np.argsort(-p, -1)
-        return self.sign_to_prediction_index_map[predict[0]]
+        predict = np.argsort(-p, -1)[0]
+        
+        word = self.sign_to_prediction_index_map[predict]
+        confidence = p[predict]
+        return word, confidence

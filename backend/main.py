@@ -37,28 +37,16 @@ def load_model():
 # endpoint for inference
 @app.post("/transcribe")
 async def predict(data: list[TranscribeReq]):
-    # print(data)
+    THRESHOLD = 0.4
+    outputs = []
+    for i in range(int(len(data)/250)):
+        new_data = data[i*250:(i+1)*250]
+        arr = np.array(new_data)
+        model_predict, confidence  = model.predict(arr)
+        last_word_in_output = None  if len(outputs) == 0 else outputs[len(outputs) - 1]
+        if (last_word_in_output != model_predict ) and confidence > THRESHOLD:
+            outputs.append((last_word_in_output))
 
-    arr = np.array(data)
-
-    print("Shape of data is ",arr.shape)
-    print("Type of data is", type(data[0]))
-    prediction = model.predict(data)
-    
-    # print("pose data length", len(data[0].pose))
-    # print("pose data index 0" , data[0].pose[0])
-    # print('\n\n')
-    # print("face data length", len(data[0].face))
-    # print("face data index 0" , data[0].face[0])
-    # print('\n\n')
-    if (data[0].leftHand):
-        print("left hand data length", len(data[0].leftHand))
-        print("left hand data index 0" , data[0].leftHand[0])
-        print('\n\n')
-    if (data[0].rightHand):
-        print("right hand data length", len(data[0].rightHand))
-        print("right hand data index 0" , data[0].rightHand[0])
-        print('\n\n')
-
-    # return da
+        
+    prediction = None   #TODO
     return {"transcript": f"some asl prediction that came from the backend: {prediction}" }
