@@ -46,22 +46,22 @@ class TFLiteModel:
                 frame.face = frame.face[:468]
             df = pd.concat([df, pd.DataFrame([[p.x, p.y, p.z] for p in frame.face], columns=['x', 'y', 'z'])])
         else:
-            df = pd.concat([df, pd.DataFrame([[0, 0, 0] for _ in range(468)], columns=['x', 'y', 'z'])])
+            df = pd.concat([df, pd.DataFrame([[np.nan, np.nan, np.nan] for _ in range(468)], columns=['x', 'y', 'z'])])
             
         if frame.leftHand:
             df = pd.concat([df, pd.DataFrame([[p.x, p.y, p.z] for p in frame.leftHand], columns=['x', 'y', 'z'])])
         else:
-            df = pd.concat([df, pd.DataFrame([[0, 0, 0] for _ in range(21)], columns=['x', 'y', 'z'])])
+            df = pd.concat([df, pd.DataFrame([[np.nan, np.nan, np.nan] for _ in range(21)], columns=['x', 'y', 'z'])])
         
         if frame.pose:
             df = pd.concat([df, pd.DataFrame([[p.x, p.y, p.z] for p in frame.pose], columns=['x', 'y', 'z'])])
         else:
-            df = pd.concat([df, pd.DataFrame([[0, 0, 0] for _ in range(33)], columns=['x', 'y', 'z'])])
+            df = pd.concat([df, pd.DataFrame([[np.nan, np.nan, np.nan] for _ in range(33)], columns=['x', 'y', 'z'])])
             
         if frame.rightHand:
             df = pd.concat([df, pd.DataFrame([[p.x, p.y, p.z] for p in frame.rightHand], columns=['x', 'y', 'z'])])
         else:
-            df = pd.concat([df, pd.DataFrame([[0, 0, 0] for _ in range(21)], columns=['x', 'y', 'z'])])
+            df = pd.concat([df, pd.DataFrame([[np.nan, np.nan, np.nan] for _ in range(21)], columns=['x', 'y', 'z'])])
         
         return df
     

@@ -37,16 +37,24 @@ def load_model():
 # endpoint for inference
 @app.post("/transcribe")
 async def predict(data: list[TranscribeReq]):
-    THRESHOLD = 0.4
+    THRESHOLD = 4
     outputs = []
-    for i in range(int(len(data)/250)):
-        new_data = data[i*250:(i+1)*250]
+    WINDOW_SIZE = 10
+    STRIDE = 5
+    print(len(data))
+    
+    if len(data) < WINDOW_SIZE:
+        arr = np.array(data)
+        model_predict, confidence  = model.predict(arr)
+        return {"transcript": f"{model_predict}" }
+    
+    for i in range(0, len(data) - WINDOW_SIZE + 1, STRIDE):
+        new_data = data[i:i+WINDOW_SIZE]
         arr = np.array(new_data)
         model_predict, confidence  = model.predict(arr)
-        last_word_in_output = None  if len(outputs) == 0 else outputs[len(outputs) - 1]
-        if (last_word_in_output != model_predict ) and confidence > THRESHOLD:
-            outputs.append((last_word_in_output))
-
+        print(model_predict, confidence)
         
-    prediction = None   #TODO
-    return {"transcript": f"some asl prediction that came from the backend: {prediction}" }
+        if (len(outputs) == 0 or (len(outputs) > 0 and outputs[len(outputs) - 1] != model_predict)) \
+            and confidence > THRESHOLD:
+            outputs.append(model_predict)
+    return {"transcript": f"{outputs}" }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Results, Holistic, HAND_CONNECTIONS, VERSION } from '@mediapipe/holistic';
+import { Results, Holistic, HAND_CONNECTIONS, VERSION, POSE_CONNECTIONS, FACEMESH_TESSELATION } from '@mediapipe/holistic';
 import {
   drawConnectors,
   drawLandmarks,
@@ -118,12 +118,12 @@ const ASLTranslator = () => {
       );
 
       contextRef.current.globalCompositeOperation = 'source-over';
-      // drawConnectors(contextRef.current, results.poseLandmarks, POSE_CONNECTIONS,
-      //   { color: '#C0C0C070', lineWidth: 4 });
-      // drawLandmarks(contextRef.current, results.poseLandmarks,
-      //   { color: '#FF0000', lineWidth: 2 });
-      // drawConnectors(contextRef.current, results.faceLandmarks, FACEMESH_TESSELATION,
-      //   { color: '#C0C0C070', lineWidth: 1 });
+      drawConnectors(contextRef.current, results.poseLandmarks, POSE_CONNECTIONS,
+        { color: '#C0C0C070', lineWidth: 4 });
+      drawLandmarks(contextRef.current, results.poseLandmarks,
+        { color: '#FF0000', lineWidth: 2 });
+      drawConnectors(contextRef.current, results.faceLandmarks, FACEMESH_TESSELATION,
+        { color: '#C0C0C070', lineWidth: 1 });
       drawConnectors(contextRef.current, results.leftHandLandmarks, HAND_CONNECTIONS,
         { color: '#CC0000', lineWidth: 5 });
       drawLandmarks(contextRef.current, results.leftHandLandmarks,
@@ -169,7 +169,10 @@ const ASLTranslator = () => {
 
       prevFrame.current = currentFrame.current;
       let avgDiff = totalDiff / totalHands;
-      console.log(avgDiff);
+      // console.log(avgDiff);
+      if (results.leftHandLandmarks) {
+        console.log(results.leftHandLandmarks[0])
+      }
       if (avgDiff > 2) {
         setCurrentlySigning(true);
         currentlySigningRef.current = true;
