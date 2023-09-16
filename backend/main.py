@@ -1,25 +1,22 @@
-# fast api ai inference server
-import os
-import sys
-import uvicorn
 import logging
 import pandas as pd
-
 from fastapi import FastAPI, File, UploadFile
-
-# setup cors
 from fastapi.middleware.cors import CORSMiddleware
-# allow all 
-origins = [
-    "*"
-]
+
+origins = ["*"]
 
 # setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # setup fast api
-app = FastAPI()
+app = FastAPI(
+    title="FastAPI AI Inference Server",
+    description="FastAPI AI Inference Server",
+    version="0.1.0",
+    docs_url="/",
+    redoc_url=None,
+)
 
 # make fastapi load the model only once
 # https://fastapi.tiangolo.com/advanced/on-startup-events/
@@ -31,21 +28,8 @@ def load_model():
     # model = pd.read_pickle("model.pkl")
     logger.info("Model loaded")
     
-# endpoint for health check
-@app.get("/")
-def health_check():
-    return {"status": "ok"}
-
 # endpoint for inference
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    # save file to disk
-    # with open(file.filename, "wb") as buffer:
-    #     buffer.write(file.file.read())
-    # # read file
-    # data = pd.read_csv(file.filename)
-    # # make prediction
+async def predict(data):
     prediction = model
-    return {"prediction": prediction}
-
-
+    return {"prediction": data}
