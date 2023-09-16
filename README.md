@@ -5,9 +5,9 @@ This is a simple app that detects ASL using the camera of your device. It uses t
 ## Run with Docker
 Local:
 ```
-docker compose up --d --build --remove-orphans
+docker compose up -d --build --remove-orphans
 ```
 Deploy:
 ```
-docker compose -f docker-compose.prod.yml up --d --build --remove-orphans
+docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
 ```
