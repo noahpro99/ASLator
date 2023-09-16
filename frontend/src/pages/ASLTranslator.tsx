@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { Results, Holistic, HAND_CONNECTIONS, FACEMESH_TESSELATION, POSE_CONNECTIONS, VERSION } from '@mediapipe/holistic';
+import { Results, Holistic, HAND_CONNECTIONS, VERSION } from '@mediapipe/holistic';
 import {
   drawConnectors,
   drawLandmarks,
-  Data,
-  lerp,
 } from '@mediapipe/drawing_utils';
 
 const ASLTranslator = () => {
   const [inputVideoReady, setInputVideoReady] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [currentlySigning, setCurrentlySigning] = useState(false);
-  const [currentTranscript, setCurrentTranscript] = useState('transcript here lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua');
+  const [currentTranscript, setCurrentTranscript] = useState<string[]>([]);
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const recordedData = useRef<any[]>([]);
+  const currentlySigningRef = useRef(false);
   const inputVideoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -69,6 +70,28 @@ const ASLTranslator = () => {
       };
     }
   }, [inputVideoReady]);
+
+  const transcribe = (data: any) => {
+    fetch('http://localhost:5000/transcribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setCurrentTranscript(value => [...value, data.transcript]);
+        // timeout to give time for the new transcript to render before scrolling
+        setTimeout(() => {
+          bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   const onResults = (results: Results) => {
     if (canvasRef.current && contextRef.current) {
@@ -147,14 +170,26 @@ const ASLTranslator = () => {
       prevFrame.current = currentFrame.current;
       let avgDiff = totalDiff / totalHands;
       console.log(avgDiff);
-      if (avgDiff > 0.7) {
+      if (avgDiff > 2) {
         setCurrentlySigning(true);
+        currentlySigningRef.current = true;
+        recordedData.current = [];
       }
-      if (avgDiff > 0.11) {
+      if (avgDiff > 1) {
         lastChange.current = currentFrame.current;
       }
       if (currentFrame.current - lastChange.current > 20) {
+        if (currentlySigningRef.current) { transcribe(recordedData.current); }
         setCurrentlySigning(false);
+        currentlySigningRef.current = false;
+      }
+      if (currentlySigningRef.current) {
+        recordedData.current.push({
+          pose: results.poseLandmarks,
+          face: results.faceLandmarks,
+          leftHand: results.leftHandLandmarks,
+          rightHand: results.rightHandLandmarks,
+        });
       }
       currentFrame.current++;
     }
@@ -193,14 +228,17 @@ const ASLTranslator = () => {
               Currently Signing</div>
           }
         </div>
-        <div className='w-full md:w-1/2 h-full flex flex-col border-4 border-green-500 rounded-xl shadow-2xl'>
-          <div className='flex flex-col flex-grow p-4'>
-            {currentTranscript &&
-              <div className='text-2xl font-bold overflow-y-auto'>
-                {currentTranscript}
-              </div>
-            }
-          </div>
+        <div className='w-full md:w-1/2 h-full flex flex-col border-4 border-green-500 rounded-xl shadow-2xl max-h-[35rem]'>
+          <ul className='flex flex-col p-4 text-2xl font-bold text-center overflow-y-scroll'>
+            {currentTranscript.map((transcript, index) => {
+              return (
+                <li key={index} className='p-2 border-b border-gray-300'>
+                  {transcript}
+                </li>
+              );
+            })}
+            <div ref={bottomRef} />
+          </ul>
         </div>
       </div >
     </>
