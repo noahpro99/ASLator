@@ -14,7 +14,7 @@ interface DivContent1Props {
 }
 const DivContent1: React.FC<DivContent1Props> = ({ handleClick }) => (<div className="bg-maroon flex items-center justify-center" data-aos="flip-left" data-aos-duration="1000">
   <div className="flex flex-row items-center justify-center flex-wrap">
-    <img className="m-8 max-w-xl" src="./images/person2.png" alt="person2" />
+    <img className="m-8 max-w-xl" src={"./images/person2.png"} alt="person2" />
     <div className="flex flex-col items-center justify-center">
       <h2 className="text-3xl font-bold text-light-gold mb-4">
         Real-time Translation
@@ -45,7 +45,7 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
       <div className="bg-maroon flex flex-row items-center justify-center" data-aos="flip-right"
            data-aos-duration="1000">
         <div className="flex flex-col items-center justify-center flex-shrink-1 flex-grow-0 flex-basis-auto m-6">
-          <img className="max-w-[450px] m-4" src="./images/person2.png" alt="person"/>
+          <img className="max-w-[450px] m-4" src={"./images/person2.png"} alt="person"/>
           <button
               onClick={handleClick}
               className="bg-orange m-6 hover:bg-light-orange hover:-translate-y-1 transform transition duration-3 shadow-lg hover:shadow-2xl text-light-gold font-bold p-4 text-xl rounded-full"
@@ -119,7 +119,7 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
                 {Array.from({ length: 3 }).map((_, index) => (
                     <div style={{ marginRight: '10px' }}>
                       <img
-                          src="./images/dot.png" // Make sure this path is correct
+                          src={"./images/dot.png"} // Make sure this path is correct
                           alt={`dot-${index}`}
                           style={{ width: '30px', height: '30px', transform: 'scale(1)' }}
                       />
@@ -143,7 +143,7 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
                 {Array.from({ length: 3 }).map((_, index) => (
                     <div style={{ marginRight: '10px' }}>
                       <img
-                          src="./images/dot.png" // Make sure this path is correct
+                          src={"./images/dot.png"} // Make sure this path is correct
                           alt={`dot-${index}`}
                           style={{ width: '30px', height: '30px', transform: 'scale(1)' }}
                       />
@@ -175,7 +175,7 @@ function Home() {
         <div className="flex flex-row items-center justify-center flex-wrap">
           <div className="flex flex-col items-center justify-center p-8 animate-fade-up animate-delay-[300ms]">
             <h1 className="text-6xl font-bold mb-4 flex flex-row items-center justify-center">
-              <img src="./images/logo-orange.png" alt="logo" className="w-16 h-16 mr-2" />
+              <img src={"./images/logo-orange.png"} alt="logo" className="w-16 h-16 mr-2" />
               <span className="text-light-maroon">ASL</span>
               <span className="text-light-orange">Translator</span>
             </h1>
@@ -189,7 +189,7 @@ function Home() {
               Get Started
             </Link>
           </div>
-          <img className="m-8 max-w-prose" src="./images/person.png" alt="person" />
+          <img className="m-8 max-w-prose" src={"./images/person.png"} alt="person" />
         </div>
       </div>
       {showDiv1 ? <DivContent1 handleClick={handleClick} /> : <DivContent2 trigger={trigger} handleClick={handleClick}/>}

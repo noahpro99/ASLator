@@ -9,7 +9,7 @@ function Navbar() {
       <nav className="bg-maroon border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 md:p-2">
           <Link to="/" className="flex items-center">
-            <img src="./images/logo-orange.png" alt="logo" className="w-10 h-10 mr-2" />
+            <img src={"./images/logo-orange.png"} alt="logo" className="w-10 h-10 mr-2" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-light-gold hover:-translate-y-1 transform transition duration-3">
               ASLTranslator</span>
           </Link>

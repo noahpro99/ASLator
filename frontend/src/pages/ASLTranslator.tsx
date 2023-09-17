@@ -265,7 +265,7 @@ const ASLTranslator = () => {
               speakOn.current = !speakOn.current;
               setTrigger(!trigger);
             }}>
-              <img src={speakOn.current ? "sound-on.png" : "speaker.png"} alt='speaker on' className='w-6 h-6 mx-auto rounded-full' />
+              <img src={speakOn.current ? ".images/sound-on.png" : ".images/speaker.png"} alt='speaker on' className='w-6 h-6 mx-auto rounded-full' />
             </button>
           </div>
         </div>
