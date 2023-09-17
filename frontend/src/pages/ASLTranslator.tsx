@@ -173,7 +173,7 @@ const ASLTranslator = () => {
       if (results.leftHandLandmarks) {
         console.log(results.leftHandLandmarks[0])
       }
-      if (avgDiff > 2) {
+      if (avgDiff > 2 && !currentlySigningRef.current) {
         setCurrentlySigning(true);
         currentlySigningRef.current = true;
         recordedData.current = [];
@@ -195,6 +195,7 @@ const ASLTranslator = () => {
         });
       }
       currentFrame.current++;
+      console.log(recordedData.current.length);
     }
   };
 

@@ -43,10 +43,10 @@ def load_model():
 
 @app.post("/transcribe")
 async def predict(data: list[TranscribeReq]):
-    THRESHOLD = 3
+    THRESHOLD = 7
     outputs = []
     WINDOW_SIZE = 10
-    STRIDE = 2
+    STRIDE = 5
     print(len(data))
     # data = data[:: -1]
 
@@ -68,14 +68,6 @@ async def predict(data: list[TranscribeReq]):
         if (len(outputs) == 0 or (len(outputs) > 0 and outputs[len(outputs) - 1] != model_predict)) \
                 and confidence > THRESHOLD:
             outputs.append(model_predict)
-        
-        WINDOW_SIZE = 5
-        model_predict, confidence = model.predict(np.array(data[i:i+WINDOW_SIZE]))
-        print(f"window of {i} to {i+WINDOW_SIZE}: {model_predict}, {confidence}")
-        if (len(outputs) == 0 or (len(outputs) > 0 and outputs[len(outputs) - 1] != model_predict)) \
-                and confidence > THRESHOLD:
-            outputs.append(model_predict)
-        WINDOW_SIZE = 10
 
     # ask openai to interpret the outputs into what the sign language means in an english sentence
     print(f"outputs: {outputs}")
