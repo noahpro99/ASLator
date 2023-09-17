@@ -61,7 +61,7 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
                       <motion.div
                           initial={{x: '0%', y: '50%', opacity: 0}}
                           animate={{x: `${index * 80}px`, opacity: 1}}
-                          transition={{duration: 0.3, delay: index * 0.3}}
+                          transition={{duration: 0.25, delay: index * 0.25}}
                           style={{
                             position: 'absolute',
                             top: 0,
@@ -86,7 +86,7 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
                       <motion.div
                           initial={{x: '0%', y: '50%', opacity: 0}}
                           animate={{x: `${index * 80}px`, opacity: 1}}
-                          transition={{duration: 0.3, delay: index * 0.3}}
+                          transition={{duration: 0.25, delay: index * 0.25}}
                           style={{
                             position: 'absolute',
                             top: 0,
@@ -105,10 +105,29 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
             ))}
           </div>
           <div style={{position: 'relative', width: '1000px', height: '100px', top: '0'}} className="mt-[0px]">
+              <div style={{ position: 'relative', width: '1000px', height: '50px' }}>
+                  <motion.div
+                      initial={{ clipPath: 'inset(0 100% 0 0)' }}
+                      animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                      transition={{ duration: 3, delay: 6.1 }}
+                      style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '350px',
+                          width: '100%',
+                          height: '100%',
+                          color: '#F0C258',
+                          fontSize: '40px',
+                          backgroundColor: 'transparent',
+                      }}
+                  >
+                      Hello, I am
+                  </motion.div>
+              </div>
             <motion.div
                 initial={{ x: '0px', y: '50%', opacity: 0 }}
                 animate={{ x: '690px', opacity: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1,0,1,0] }}
-                transition={{ duration: 7, delay: 0.3, opacity: { yoyo: Infinity, duration: 7.3 } }}
+                transition={{ duration: 5.8, delay: 0.25, opacity: { yoyo: Infinity, duration: 6.05 } }}
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -129,10 +148,29 @@ const DivContent2: React.FC<DivContent2Props> = ({ trigger,handleClick }) => {
             </motion.div>
           </div>
           <div style={{position: 'relative', width: '1000px', height: '100px', top: '0'}} className="mt-[0px]">
-            <motion.div
+              <div style={{ position: 'relative', width: '1000px', height: '50px' }}>
+                  <motion.div
+                      initial={{ clipPath: 'inset(0 100% 0 0)' }}
+                      animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                      transition={{ duration: 3, delay: 6.7 }}
+                      style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '335px',
+                          width: '100%',
+                          height: '100%',
+                          color: '#F0C258',
+                          fontSize: '40px',
+                          backgroundColor: 'transparent',
+                      }}
+                  >
+                        Here to help
+                  </motion.div>
+              </div>
+              <motion.div
                 initial={{ x: '0px', y: '50%', opacity: 0 }}
                 animate={{ x: '850px', opacity: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1,0,1,0] }}
-                transition={{ duration: 7, delay: 0.3, opacity: { yoyo: Infinity, duration: 7.3 } }}
+                transition={{ duration: 5.8, delay: 0.25, opacity: { yoyo: Infinity, duration: 6.25 } }}
                 style={{
                   position: 'absolute',
                   top: 0,
