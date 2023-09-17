@@ -2,15 +2,17 @@
 
 ASLator is a app that detects ASL using the camera of your device. It uses the [MediaPipe](https://google.github.io/mediapipe/) framework to detect the hand landmarks and then uses a neural network to classify the hand gestures.
 
+![pageimg](images/landing.png)
+
 ## Inspiration
 
 Our inspiration for ASLator stems from a personal connection to the deaf community. My cousin, who is deaf and an ardent ASL user, inspired us to bridge the communication gap. We witnessed the challenges she faced when technology couldn't fully assist her in everyday interactions. ASLator is our way of ensuring that individuals like her can communicate effortlessly with the world, harnessing the power of technology to make a meaningful impact in their lives.
 
-## What it does (how it works)
+## What it does
 
-ASLator is a groundbreaking app designed to enhance communication for the deaf and hard of hearing. By leveraging the capabilities of your device's camera, ASLator detects American Sign Language (ASL) gestures in real-time. Powered by the innovative MediaPipe framework and a neural network, it precisely identifies hand landmarks and interprets ASL signs. Whether you're a sign language learner or looking to bridge the communication gap, ASLator provides an intuitive and accessible way to understand and utilize ASL, fostering inclusivity and connection in a digital world.
+ASLator is a groundbreaking app designed to enhance communication for the deaf and hard of hearing. By leveraging the capabilities of your device's camera, ASLator detects American Sign Language (ASL) gestures in real-time. Powered by the innovative MediaPipe framework and a transformer model, it precisely identifies hand landmarks and interprets ASL signs. Whether you're a sign language learner or looking to bridge the communication gap, ASLator provides an intuitive and accessible way to understand and utilize ASL, fostering inclusivity and connection in a digital world.
 
-## How we built it (stack)
+## How we built it
 
 Our final stack consisted of the following technologies:
 
@@ -32,9 +34,13 @@ Our frontend downloads the MediaPipe model and has a neat code that checks if th
 ## Accomplishments that we're proud of
 
 1. We are proud of the fact that we were able to implement a working model and integrate it with the frontend.
-2. We are also proud of our neat hack to get the model to work on multiple signs in sequence. We used a sliding window to run the model multiple times and get good results.
+2. We had a clever stagey in detecting when there user stared and stopped signing.
+3. We are also proud of our neat hack to get the model to work on multiple signs in sequence. We used a sliding window to run the model multiple times and get good results.
 
 ## What we learned
+1. We learned how to use the MediaPipe framework to detect hand landmarks.
+2. We learned how to use the TensorFlow framework to train a multi-attention model.
+3. We improved on our knowledge of using FastAPI framework to serve a model and explored the idea of multi-threading.
 
 ## What's next for ASLator
 
