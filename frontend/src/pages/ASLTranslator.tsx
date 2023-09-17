@@ -178,7 +178,7 @@ const ASLTranslator = () => {
         currentlySigningRef.current = true;
         recordedData.current = [];
       }
-      if (avgDiff > 1) {
+      if (avgDiff > 0.2) {
         lastChange.current = currentFrame.current;
       }
       if (currentFrame.current - lastChange.current > 20) {
