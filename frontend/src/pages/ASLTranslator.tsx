@@ -5,12 +5,17 @@ import {
   drawLandmarks,
 } from '@mediapipe/drawing_utils';
 
+import Speech from 'speak-tts';
+
 const ASLTranslator = () => {
   const [inputVideoReady, setInputVideoReady] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [currentlySigning, setCurrentlySigning] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState<string[]>([]);
+  const [trigger, setTrigger] = useState(false);
 
+  const speakOn = useRef(true);
+  const speech = useRef(new Speech());
   const bottomRef = useRef<HTMLDivElement>(null);
   const recordedData = useRef<any[]>([]);
   const currentlySigningRef = useRef(false);
@@ -71,6 +76,10 @@ const ASLTranslator = () => {
     }
   }, [inputVideoReady]);
 
+  useEffect(() => {
+    speech.current.init()
+  }, []);
+
   const transcribe = (data: any) => {
     fetch('http://localhost:5000/transcribe', {
       method: 'POST',
@@ -82,11 +91,18 @@ const ASLTranslator = () => {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        setCurrentTranscript(value => [...value, data.transcript]);
-        // timeout to give time for the new transcript to render before scrolling
-        setTimeout(() => {
-          bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        if (data.transcript !== '') {
+          setCurrentTranscript(value => [...value, data.transcript]);
+          // timeout to give time for the new transcript to render before scrolling
+          setTimeout(() => {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+            if (speakOn.current) {
+              speech.current.speak({
+                text: data.transcript,
+              })
+            }
+          }, 100);
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -121,17 +137,17 @@ const ASLTranslator = () => {
       drawConnectors(contextRef.current, results.poseLandmarks, POSE_CONNECTIONS,
         { color: '#C0C0C070', lineWidth: 4 });
       drawLandmarks(contextRef.current, results.poseLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
+        { color: '#CF4420', lineWidth: 2 });
       drawConnectors(contextRef.current, results.faceLandmarks, FACEMESH_TESSELATION,
         { color: '#C0C0C070', lineWidth: 1 });
       drawConnectors(contextRef.current, results.leftHandLandmarks, HAND_CONNECTIONS,
-        { color: '#CC0000', lineWidth: 5 });
+        { color: '#630031', lineWidth: 5 });
       drawLandmarks(contextRef.current, results.leftHandLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
+        { color: '#CF4420', lineWidth: 2 });
       drawConnectors(contextRef.current, results.rightHandLandmarks, HAND_CONNECTIONS,
-        { color: '#00CC00', lineWidth: 5 });
+        { color: '#630031', lineWidth: 5 });
       drawLandmarks(contextRef.current, results.rightHandLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
+        { color: '#CF4420', lineWidth: 2 });
       contextRef.current.restore();
       let totalDiff = 0;
       let totalHands = 0;
@@ -173,7 +189,7 @@ const ASLTranslator = () => {
       if (results.leftHandLandmarks) {
         console.log(results.leftHandLandmarks[0])
       }
-      if (avgDiff > 2) {
+      if (avgDiff > 2 && !currentlySigningRef.current) {
         setCurrentlySigning(true);
         currentlySigningRef.current = true;
         recordedData.current = [];
@@ -227,12 +243,12 @@ const ASLTranslator = () => {
               Loading...</div>
           }
           {currentlySigning &&
-            <div className='text-2xl font-bold text-center p-4 text-green-500'>
+            <div className='text-2xl font-bold text-center p-4 text-light-orange'>
               Currently Signing</div>
           }
         </div>
-        <div className='w-full md:w-1/2 h-full flex flex-col border-4 border-green-500 rounded-xl shadow-2xl max-h-[35rem]'>
-          <ul className='flex flex-col p-4 text-2xl font-bold text-center overflow-y-scroll'>
+        <div className='w-full md:w-1/2 h-full flex flex-col justify-between border-4 border-light-orange rounded-xl shadow-2xl max-h-[35rem]'>
+          <ul className='flex flex-col p-4 text-2xl font-bold text-center text-maroon overflow-y-scroll'>
             {currentTranscript.map((transcript, index) => {
               return (
                 <li key={index} className='p-2 border-b border-gray-300'>
@@ -240,8 +256,17 @@ const ASLTranslator = () => {
                 </li>
               );
             })}
+
             <div ref={bottomRef} />
           </ul>
+          <div className='flex flex-row justify-end'>
+            <button className='p-2 border-b border-gray-300' onClick={() => {
+              speakOn.current = !speakOn.current;
+              setTrigger(!trigger);
+            }}>
+              <img src={speakOn.current ? "sound-on.png" : "speaker.png"} alt='speaker on' className='w-6 h-6 mx-auto rounded-full' />
+            </button>
+          </div>
         </div>
       </div >
     </>
