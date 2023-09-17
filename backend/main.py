@@ -38,9 +38,6 @@ def load_model():
     # model = pd.read_pickle("model.pkl")
     logger.info("Model loaded")
 
-# endpoint for inference
-
-
 @app.post("/transcribe")
 async def predict(data: list[TranscribeReq]):
     THRESHOLD = 7
@@ -50,21 +47,16 @@ async def predict(data: list[TranscribeReq]):
     print(len(data))
     # data = data[:: -1]
 
-    # if len(data) < WINDOW_SIZE:
-    model_predict, confidence = model.predict(np.array(data))
-    print(f"all frames: {model_predict}, {confidence}")
-    # write data to csv with file name of prediction
-    # if not os.path.exists("predictions"): os.makedirs("predictions")
-    # with open(f"predictions/{model_predict}.csv", "w") as f:
-    #     for p in data.rightHand:
-    #         for d in data:
-    #             f.write(f"{p.x},{p.y}\n")
-        
-    # return {"transcript": f"{model_predict}"}
-    
+    if len(data) < WINDOW_SIZE:
+        model_predict, confidence = model.predict(np.array(data))
+        print(f"all frames: {model_predict}, {confidence}")
+        return {"transcript": f"{model_predict}"}
+
     for i in range(0, len(data) - WINDOW_SIZE + 1, STRIDE):
-        model_predict, confidence = model.predict(np.array(data[i:i+WINDOW_SIZE]))
-        print(f"window of {i} to {i+WINDOW_SIZE}: {model_predict}, {confidence}")
+        model_predict, confidence = model.predict(
+            np.array(data[i:i+WINDOW_SIZE]))
+        print(
+            f"window of {i} to {i+WINDOW_SIZE}: {model_predict}, {confidence}")
         if (len(outputs) == 0 or (len(outputs) > 0 and outputs[len(outputs) - 1] != model_predict)) \
                 and confidence > THRESHOLD:
             outputs.append(model_predict)
@@ -73,7 +65,7 @@ async def predict(data: list[TranscribeReq]):
     print(f"outputs: {outputs}")
 
     if len(outputs) == 0:
-        return {"transcript": "unsure"}
+        return {"transcript": ""}
     if len(outputs) == 1:
         return {"transcript": f"{outputs[0]}"}
 
@@ -82,11 +74,11 @@ async def predict(data: list[TranscribeReq]):
         messages=[
             {
                 "role": "system",
-                "content": "Your role is to transcribe a list of sign language gestures into an english sentence"
+                "content": "Your role is to transcribe a list of sign language gestures into an english phrase"
             },
             {
                 "role": "user",
-                "content": "Hi there, I am trying to transcribe the following sign language gestures into an english sentence: " + " ".join(outputs) + "\n\n please output only the english phrase"
+                "content": "Hi there, I am trying to transcribe the following sign language gestures into an english phrase: " + " ".join(outputs) + "\n\n please output only one small english phrase"
             },
         ],
     )
