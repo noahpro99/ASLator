@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import os
 import openai
 import numpy as np
@@ -9,12 +10,25 @@ from detect import TFLiteModel, Point, TranscribeReq
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+ml_models = {}
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the ML model
+    model = TFLiteModel()
+    ml_models["model"] = model
+    yield
+    ml_models.clear()
+    
+
+
 app = FastAPI(
     title="FastAPI AI Inference Server",
     description="FastAPI AI Inference Server",
     version="0.1.0",
     docs_url="/",
     redoc_url=None,
+    lifespan=lifespan,
 )
 
 origins = ["*"]
@@ -30,14 +44,6 @@ app.add_middleware(
 # https://fastapi.tiangolo.com/advanced/on-startup-events/
 
 
-@app.on_event("startup")
-def load_model():
-    global model
-    logger.info("Loading model")
-    model = TFLiteModel()
-    # model = pd.read_pickle("model.pkl")
-    logger.info("Model loaded")
-
 @app.post("/transcribe")
 async def predict(data: list[TranscribeReq]):
     THRESHOLD = 7
@@ -48,12 +54,12 @@ async def predict(data: list[TranscribeReq]):
     # data = data[:: -1]
 
     if len(data) < WINDOW_SIZE:
-        model_predict, confidence = model.predict(np.array(data))
+        model_predict, confidence = ml_models['model'].predict(np.array(data))
         print(f"all frames: {model_predict}, {confidence}")
         return {"transcript": f"{model_predict}"}
 
     for i in range(0, len(data) - WINDOW_SIZE + 1, STRIDE):
-        model_predict, confidence = model.predict(
+        model_predict, confidence = ml_models['model'].predict(
             np.array(data[i:i+WINDOW_SIZE]))
         print(
             f"window of {i} to {i+WINDOW_SIZE}: {model_predict}, {confidence}")
@@ -85,3 +91,7 @@ async def predict(data: list[TranscribeReq]):
     response_text = response.choices[0].message.content
     print(response_text)
     return {"transcript": f"{response_text}"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=5000)
